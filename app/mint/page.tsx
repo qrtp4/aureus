@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 const MintButton = dynamic(() => import('@/components/MintButton'), { ssr: false });
@@ -93,37 +94,47 @@ export default function MintPage() {
         </div>
       </nav>
 
-      {/* Hero mint section */}
+      {/* Hero mint section with THE MONETARY MINT image */}
       <section className="relative min-h-screen flex items-center justify-center px-4 pt-20">
-        {/* Background glow */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-[120px]" />
-          <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-amber-900/10 rounded-full blur-[80px]" />
+        {/* Background warrior image */}
+        <div className="absolute inset-0 overflow-hidden">
+          <Image
+            src="/ChatGPT Image 10 мар. 2026 г., 22_11_29.png"
+            alt="The Monetary Mint"
+            fill
+            priority
+            className="object-cover"
+            style={{ objectPosition: 'center' }}
+          />
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-[1px]" />
+          {/* Gold gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 border border-gold/30 rounded-full px-4 py-1.5 mb-8">
+          <div className="inline-flex items-center gap-2 border border-gold/30 rounded-full px-4 py-1.5 mb-8 bg-black/40">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             <span className="text-xs font-cinzel tracking-widest text-gold/80">LIVE — MINT NOW</span>
           </div>
 
           {/* Title */}
-          <h1 className="font-cinzel text-5xl md:text-7xl font-bold text-white mb-3 leading-tight">
+          <h1 className="font-cinzel text-5xl md:text-7xl font-bold text-white mb-3 leading-tight drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]">
             AUREUS
           </h1>
           <h2 className="font-cinzel text-2xl md:text-3xl text-gold tracking-[0.3em] mb-6">
             GENESIS
           </h2>
-          <p className="font-playfair text-gray-300 text-lg md:text-xl italic mb-3">
+          <p className="font-playfair text-gray-200 text-lg md:text-xl italic mb-3 drop-shadow-lg">
             888 Warriors. One Chain. No Surrender.
           </p>
-          <p className="text-gray-500 text-sm font-cinzel tracking-wider mb-12">
+          <p className="text-gray-400 text-sm font-cinzel tracking-wider mb-12">
             Polygon Mainnet · ERC-721 · Max Supply: {TOTAL_SUPPLY}
           </p>
 
           {/* Mint card */}
-          <div className="glass-card rounded-2xl p-8 md:p-10 border border-gold/20">
+          <div className="glass-card rounded-2xl p-8 md:p-10 border border-gold/20 bg-black/40">
             <MintButton />
           </div>
 
@@ -235,7 +246,7 @@ export default function MintPage() {
           </a>
           <div className="mt-16 pt-8 border-t border-gold/10">
             <p className="text-gray-700 text-xs font-cinzel tracking-wider">
-              AUREUS GENESIS © 2025 · Polygon Mainnet
+              AUREUS GENESIS &copy; 2025 · Polygon Mainnet
             </p>
             <a
               href={`https://polygonscan.com/address/${CONTRACT_ADDRESS}`}
