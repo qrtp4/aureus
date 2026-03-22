@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const PILLARS = [
   {
@@ -51,11 +52,22 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ── HERO ── */}
+      {/* ── HERO WITH SOLOMON PALACE IMAGE ── */}
       <section className="relative min-h-screen flex items-center justify-center px-4 pt-20">
-        {/* Ambient glow */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/4 rounded-full blur-[150px]" />
+        {/* Background image */}
+        <div className="absolute inset-0 overflow-hidden">
+          <Image
+            src="/ChatGPT Image 14. März 2026, 02_10_00.png"
+            alt="Solomon Palace"
+            fill
+            priority
+            className="object-cover"
+            style={{ objectPosition: 'center' }}
+          />
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+          {/* Gold glow */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gold/5 to-black/80" />
         </div>
 
         <div className="relative z-10 text-center max-w-4xl mx-auto">
@@ -66,39 +78,39 @@ export default function Home() {
             <div className="h-px w-16 bg-gold/40" />
           </div>
 
-          <h1 className="font-cinzel font-bold text-6xl md:text-8xl xl:text-9xl text-white leading-none mb-4">
+          <h1 className="font-cinzel font-bold text-6xl md:text-8xl xl:text-9xl text-white leading-none mb-4 drop-shadow-[0_0_40px_rgba(212,175,55,0.3)]">
             AUREUS
           </h1>
           <div className="font-cinzel text-gold text-xl md:text-2xl tracking-[0.5em] mb-6">
             GENESIS
           </div>
 
-          <p className="font-playfair italic text-gray-300 text-lg md:text-2xl max-w-xl mx-auto mb-4">
+          <p className="font-playfair italic text-gray-200 text-lg md:text-2xl max-w-xl mx-auto mb-4 drop-shadow-lg">
             888 Warriors. One Chain. Eternal Legacy.
           </p>
-          <p className="font-cinzel text-gray-600 text-xs tracking-widest mb-14">
+          <p className="font-cinzel text-gray-400 text-xs tracking-widest mb-14">
             POLYGON MAINNET &nbsp;&middot;&nbsp; ERC-721 &nbsp;&middot;&nbsp; 888 MAX SUPPLY
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/mint"
-              className="inline-block bg-gold text-black font-cinzel font-bold text-sm tracking-widest px-10 py-4 hover:bg-amber-400 transition-all duration-300"
+              className="inline-block bg-gold text-black font-cinzel font-bold text-sm tracking-widest px-10 py-4 hover:bg-amber-400 transition-all duration-300 shadow-gold"
             >
               MINT YOUR GENESIS NFT
             </Link>
             <a
               href="#about"
-              className="inline-block border border-gold/30 text-gold/60 font-cinzel text-sm tracking-widest px-10 py-4 hover:border-gold hover:text-gold transition-all duration-300"
+              className="inline-block border border-gold/30 text-gold/80 font-cinzel text-sm tracking-widest px-10 py-4 hover:border-gold hover:text-gold hover:bg-gold/10 transition-all duration-300"
             >
               LEARN MORE
             </a>
           </div>
 
           {/* Live badge */}
-          <div className="mt-12 inline-flex items-center gap-2 border border-gold/20 rounded-full px-5 py-2">
+          <div className="mt-12 inline-flex items-center gap-2 border border-gold/20 rounded-full px-5 py-2 bg-black/40">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-xs font-cinzel tracking-widest text-gray-400">MINT IS LIVE &mdash; 888 SPOTS AVAILABLE</span>
+            <span className="text-xs font-cinzel tracking-widest text-gray-300">MINT IS LIVE &mdash; 888 SPOTS AVAILABLE</span>
           </div>
         </div>
 
@@ -106,6 +118,32 @@ export default function Home() {
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
           <div className="h-8 w-px bg-gold" />
           <span className="font-cinzel text-gold text-xs tracking-widest">SCROLL</span>
+        </div>
+      </section>
+
+      {/* ── AUREUS LEGION COIN SECTION ── */}
+      <section className="py-20 px-4 bg-black relative">
+        <div className="absolute inset-0 overflow-hidden opacity-20">
+          <Image
+            src="/ChatGPT Image 11 мар. 2026 г., 00_23_27.png"
+            alt="AUREUS Legion"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/80" />
+        </div>
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center relative z-10">
+          {[
+            { v: '888', l: 'GENESIS SUPPLY' },
+            { v: '0', l: 'TEAM RESERVE' },
+            { v: '100%', l: 'ON-CHAIN' },
+            { v: '∞', l: 'LEGACY' },
+          ].map((s) => (
+            <div key={s.l}>
+              <p className="font-cinzel text-3xl md:text-4xl text-gold mb-2">{s.v}</p>
+              <p className="font-cinzel text-xs text-gray-500 tracking-widest">{s.l}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -139,26 +177,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── STATS ── */}
-      <section className="py-20 px-4 bg-gold/5 border-y border-gold/10">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { v: '888', l: 'GENESIS SUPPLY' },
-            { v: '0', l: 'TEAM RESERVE' },
-            { v: '100%', l: 'ON-CHAIN' },
-            { v: '\u221e', l: 'LEGACY' },
-          ].map((s) => (
-            <div key={s.l}>
-              <p className="font-cinzel text-3xl md:text-4xl text-gold mb-2">{s.v}</p>
-              <p className="font-cinzel text-xs text-gray-600 tracking-widest">{s.l}</p>
-            </div>
-          ))}
+      {/* ── ROADMAP WITH MARKETPLACE ── */}
+      <section id="roadmap" className="py-32 px-4 relative">
+        {/* Background marketplace image */}
+        <div className="absolute inset-0 overflow-hidden opacity-10">
+          <Image
+            src="/ChatGPT Image 22 мар. 2026 г., 18_10_18.png"
+            alt="Solomon Marketplace"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/60" />
         </div>
-      </section>
 
-      {/* ── ROADMAP ── */}
-      <section id="roadmap" className="py-32 px-4">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <p className="font-cinzel text-gold text-xs tracking-[0.5em] mb-3">THE PATH</p>
             <h2 className="font-cinzel text-4xl md:text-5xl text-white">Roadmap</h2>
@@ -201,7 +233,7 @@ export default function Home() {
           </p>
           <Link
             href="/mint"
-            className="inline-block bg-gold text-black font-cinzel font-bold text-sm tracking-widest px-12 py-5 hover:bg-amber-400 transition-all duration-300"
+            className="inline-block bg-gold text-black font-cinzel font-bold text-sm tracking-widest px-12 py-5 hover:bg-amber-400 transition-all duration-300 shadow-gold"
           >
             CLAIM YOUR GENESIS NFT
           </Link>
