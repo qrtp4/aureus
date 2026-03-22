@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
 declare global {
@@ -22,180 +22,237 @@ export default function MintButton() {
   const [account, setAccount] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState<bigint | null>(null);
+  const [mintPrice, setMintPrice] = useState<bigint | null>(null);
+  const [saleActive, setSaleActive] = useState(false);
+  const [maxPerTx, setMaxPerTx] = useState(10);
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
-  const [saleActive, setSaleActive] = useState<boolean | null>(null);
-  const [maxPerTx, setMaxPerTx] = useState(5);
+  const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'confirming' | 'success' | 'error'>('idle');
+
+  const getContract = useCallback(async (withSigner = false) => {
+    if (!window.ethereum) throw new Error('No wallet detected');
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    if (withSigner) {
+      const signer = await provider.getSigner();
+      return new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+    }
+    return new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+  }, []);
 
   const loadContractData = useCallback(async () => {
     try {
-      if (!window.ethereum) return;
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-      const [p, ts, sa, mpt] = await Promise.all([
+      const contract = await getContract();
+      const [price, active, maxTx, supply] = await Promise.all([
         contract.mintPrice(),
-        contract.totalSupply(),
         contract.saleActive(),
         contract.maxPerTx(),
+        contract.totalSupply(),
       ]);
-      setPrice(p);
-      setTotalSupply(Number(ts));
-      setSaleActive(sa);
-      setMaxPerTx(Number(mpt));
-    } catch {}
-  }, []);
+      setMintPrice(price);
+      setSaleActive(active);
+      setMaxPerTx(Number(maxTx));
+      setTotalSupply(Number(supply));
+    } catch (e) {
+      // silent — wallet might not be connected yet
+    }
+  }, [getContract]);
 
   useEffect(() => {
     loadContractData();
   }, [loadContractData]);
 
-  const connectWallet = async () => {
+  const switchToPolygon = async () => {
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: POLYGON_CHAIN_ID }],
+    }).catch(async (err: any) => {
+      if (err.code === 4902) {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: POLYGON_CHAIN_ID,
+            chainName: 'Polygon Mainnet',
+            nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+            rpcUrls: ['https://polygon-rpc.com'],
+            blockExplorerUrls: ['https://polygonscan.com'],
+          }],
+        });
+      }
+    });
+  };
+
+  const connect = async () => {
+    if (!window.ethereum) {
+      setError('Please install MetaMask to mint.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
     try {
-      if (!window.ethereum) { setError('MetaMask not installed'); return; }
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      if (chainId !== POLYGON_CHAIN_ID) { setError('Switch MetaMask to Polygon Mainnet'); return; }
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setAccount(accounts[0] ?? null);
-      setError(null);
+      await switchToPolygon();
+      const accounts: string[] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      setAccount(accounts[0]);
       await loadContractData();
-    } catch (e: any) { setError(e?.message || 'Connection error'); }
+    } catch (e: any) {
+      setError(e.message || 'Connection failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const mint = async () => {
+    if (!account || mintPrice === null) return;
+    setLoading(true);
+    setError(null);
+    setStatus('confirming');
+    setTxHash(null);
     try {
-      if (!window.ethereum) { setError('MetaMask not installed'); return; }
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-      if (chainId !== POLYGON_CHAIN_ID) { setError('Switch to Polygon Mainnet'); return; }
-      setLoading(true); setError(null); setSuccess(false);
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-      const currentPrice = await contract.mintPrice();
-      const totalCost = currentPrice * BigInt(quantity);
+      await switchToPolygon();
+      const contract = await getContract(true);
+      const totalCost = mintPrice * BigInt(quantity);
       const tx = await contract.mint(quantity, { value: totalCost });
+      setTxHash(tx.hash);
       await tx.wait();
-      setSuccess(true);
+      setStatus('success');
       await loadContractData();
     } catch (e: any) {
-      const msg = e?.reason || e?.shortMessage || e?.message || 'Mint error';
-      setError(msg);
-    } finally { setLoading(false); }
+      const msg = e?.reason || e?.message || 'Transaction failed';
+      setError(msg.length > 120 ? msg.slice(0, 120) + '...' : msg);
+      setStatus('error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    if (!window.ethereum) return;
-    const onAccounts = (a: string[]) => setAccount(a[0] ?? null);
-    const onChain = () => window.location.reload();
-    window.ethereum.on('accountsChanged', onAccounts);
-    window.ethereum.on('chainChanged', onChain);
-    return () => {
-      window.ethereum.removeListener('accountsChanged', onAccounts);
-      window.ethereum.removeListener('chainChanged', onChain);
-    };
-  }, []);
+  const totalCostEth = mintPrice !== null
+    ? ethers.formatEther(mintPrice * BigInt(quantity))
+    : null;
 
-  const priceInPol = price ? parseFloat(ethers.formatEther(price)).toFixed(4) : null;
-  const totalCostInPol = price ? parseFloat(ethers.formatEther(price * BigInt(quantity))).toFixed(4) : null;
-  const MAX_SUPPLY = 100;
-  const remaining = totalSupply !== null ? MAX_SUPPLY - totalSupply : null;
-  const progressPct = totalSupply !== null ? (totalSupply / MAX_SUPPLY) * 100 : 0;
+  const pricePerNft = mintPrice !== null
+    ? ethers.formatEther(mintPrice)
+    : null;
 
   return (
-    <div className="glass-card rounded-2xl p-8 max-w-md w-full mx-auto">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h2 className="font-cinzel text-2xl text-gradient-gold mb-1">The Monetary Mint</h2>
-        <p className="text-gray-500 text-sm font-playfair italic">AUREUS GENESIS Collection</p>
+    <div className="w-full max-w-sm mx-auto">
+      {/* Sale status */}
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <div className={`w-2 h-2 rounded-full ${
+          saleActive ? 'bg-green-400 animate-pulse' : 'bg-gray-600'
+        }`} />
+        <span className="font-cinzel text-xs tracking-widest text-gray-400">
+          {saleActive ? 'SALE ACTIVE' : 'SALE INACTIVE'}
+        </span>
+        {totalSupply !== null && (
+          <span className="font-cinzel text-xs text-gold/40 ml-2">
+            {totalSupply} / 888 MINTED
+          </span>
+        )}
       </div>
 
-      {/* Supply Progress */}
-      {totalSupply !== null && (
-        <div className="mb-6">
-          <div className="flex justify-between text-xs font-cinzel text-gray-400 mb-2">
-            <span>MINTED</span>
-            <span>{totalSupply} / {MAX_SUPPLY}</span>
+      {!account ? (
+        /* Connect wallet */
+        <button
+          onClick={connect}
+          disabled={loading}
+          className="w-full bg-gold text-black font-cinzel font-bold text-sm tracking-widest py-4 px-8 hover:bg-amber-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? 'CONNECTING...' : 'CONNECT WALLET'}
+        </button>
+      ) : (
+        <div className="space-y-5">
+          {/* Wallet info */}
+          <div className="flex items-center justify-between px-1">
+            <span className="font-cinzel text-xs text-gray-600 tracking-widest">CONNECTED</span>
+            <span className="font-mono text-xs text-gold/50">
+              {account.slice(0, 6)}...{account.slice(-4)}
+            </span>
           </div>
-          <div className="w-full bg-white/5 rounded-full h-2">
-            <div className="progress-gold h-2 rounded-full transition-all duration-700" style={{ width: `${progressPct}%` }}></div>
-          </div>
-          {remaining !== null && (
-            <p className="text-right text-xs text-gold mt-1 font-cinzel">{remaining} remaining</p>
+
+          {/* Price info */}
+          {pricePerNft && (
+            <div className="flex items-center justify-between px-1">
+              <span className="font-cinzel text-xs text-gray-600 tracking-widest">PRICE / NFT</span>
+              <span className="font-cinzel text-sm text-white">{pricePerNft} MATIC</span>
+            </div>
           )}
-        </div>
-      )}
 
-      {/* Price Info */}
-      {priceInPol && (
-        <div className="flex justify-between items-center mb-6 py-3 border-t border-b border-gold/10">
-          <span className="text-gray-400 font-cinzel text-xs tracking-widest">PRICE PER NFT</span>
-          <span className="text-gold font-cinzel font-bold">{priceInPol} POL</span>
-        </div>
-      )}
-
-      {/* Quantity Selector */}
-      {account && (
-        <div className="mb-6">
-          <p className="text-xs font-cinzel text-gray-400 tracking-widest mb-3">QUANTITY</p>
-          <div className="flex items-center justify-center gap-6">
-            <button
-              onClick={() => setQuantity(q => Math.max(1, q - 1))}
-              className="w-10 h-10 rounded-full border border-gold/30 text-gold hover:border-gold hover:bg-gold/10 transition-all font-cinzel text-xl"
-            >-</button>
-            <span className="text-3xl font-cinzel text-white w-12 text-center">{quantity}</span>
-            <button
-              onClick={() => setQuantity(q => Math.min(maxPerTx, q + 1))}
-              className="w-10 h-10 rounded-full border border-gold/30 text-gold hover:border-gold hover:bg-gold/10 transition-all font-cinzel text-xl"
-            >+</button>
+          {/* Quantity selector */}
+          <div>
+            <div className="flex items-center justify-between mb-2 px-1">
+              <span className="font-cinzel text-xs text-gray-600 tracking-widest">QUANTITY</span>
+              <span className="font-cinzel text-xs text-gray-600">MAX {maxPerTx}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                disabled={loading}
+                className="w-10 h-10 border border-gold/30 text-gold font-cinzel text-xl hover:border-gold hover:bg-gold/10 transition-all disabled:opacity-30"
+              >
+                −
+              </button>
+              <div className="flex-1 text-center font-cinzel text-2xl text-white">{quantity}</div>
+              <button
+                onClick={() => setQuantity(Math.min(maxPerTx, quantity + 1))}
+                disabled={loading}
+                className="w-10 h-10 border border-gold/30 text-gold font-cinzel text-xl hover:border-gold hover:bg-gold/10 transition-all disabled:opacity-30"
+              >
+                +
+              </button>
+            </div>
           </div>
-          {totalCostInPol && (
-            <p className="text-center text-gold/60 text-sm font-cinzel mt-2">Total: {totalCostInPol} POL</p>
+
+          {/* Total cost */}
+          {totalCostEth && (
+            <div className="flex items-center justify-between px-1 py-3 border-t border-b border-gold/10">
+              <span className="font-cinzel text-xs text-gray-400 tracking-widest">TOTAL</span>
+              <span className="font-cinzel text-lg text-gold">{totalCostEth} MATIC</span>
+            </div>
           )}
+
+          {/* Mint button */}
+          <button
+            onClick={mint}
+            disabled={loading || !saleActive}
+            className="w-full bg-gold text-black font-cinzel font-bold text-sm tracking-widest py-4 px-8 hover:bg-amber-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                {status === 'confirming' ? 'MINTING...' : 'LOADING...'}
+              </span>
+            ) : saleActive ? (
+              `MINT ${quantity} NFT${quantity > 1 ? 'S' : ''}`
+            ) : (
+              'SALE NOT ACTIVE'
+            )}
+          </button>
         </div>
       )}
 
-      {/* Sale Status */}
-      {saleActive === false && (
-        <div className="text-center text-yellow-500/80 text-sm font-cinzel mb-4 tracking-widest">
-          ⚠ SALE NOT ACTIVE
+      {/* Success */}
+      {status === 'success' && txHash && (
+        <div className="mt-5 p-4 border border-green-500/30 bg-green-500/5 rounded">
+          <p className="font-cinzel text-green-400 text-xs tracking-widest mb-2">MINT SUCCESSFUL</p>
+          <a
+            href={`https://polygonscan.com/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-xs text-green-400/60 hover:text-green-400 transition-colors break-all"
+          >
+            View on PolygonScan →
+          </a>
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="text-red-400 text-xs text-center mb-4 font-playfair italic bg-red-900/10 rounded-lg p-3">
-          {error}
+        <div className="mt-4 p-3 border border-red-500/30 bg-red-500/5 rounded">
+          <p className="text-red-400 text-xs font-cinzel tracking-wide">{error}</p>
         </div>
-      )}
-
-      {/* Success */}
-      {success && (
-        <div className="text-green-400 text-sm text-center mb-4 font-cinzel tracking-widest bg-green-900/10 rounded-lg p-3">
-          ✦ MINT SUCCESSFUL ✦
-        </div>
-      )}
-
-      {/* Action Button */}
-      {!account ? (
-        <button onClick={connectWallet} className="btn-gold w-full py-4 rounded-xl text-sm tracking-[0.2em] font-cinzel">
-          CONNECT WALLET
-        </button>
-      ) : (
-        <button
-          onClick={mint}
-          disabled={loading || saleActive === false}
-          className="btn-gold w-full py-4 rounded-xl text-sm tracking-[0.2em] font-cinzel disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {loading ? 'MINTING...' : 'MINT NFT'}
-        </button>
-      )}
-
-      {/* Wallet Address */}
-      {account && (
-        <p className="text-center text-gray-600 text-xs mt-4 font-cinzel">
-          {account.slice(0, 6)}...{account.slice(-4)}
-        </p>
       )}
     </div>
   );
