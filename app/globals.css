@@ -2,14 +2,162 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D080;
+  --gold-dark: #8B6914;
+  --bg-dark: #050505;
+  --bg-card: #0d0d0d;
+  --font-cinzel: 'Cinzel', serif;
+  --font-playfair: 'Playfair Display', serif;
+}
+
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 body {
+  background-color: var(--bg-dark);
+  color: #fff;
+  font-family: var(--font-playfair);
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel);
+}
+
+.font-playfair {
+  font-family: var(--font-playfair);
+}
+
+/* Gold text */
+.text-gold {
+  color: var(--gold);
+}
+
+/* Gold border */
+.border-gold {
+  border-color: var(--gold);
+}
+
+/* Glowing gold animation */
+@keyframes goldGlow {
+  0%, 100% { text-shadow: 0 0 10px #C9A84C44, 0 0 20px #C9A84C22; }
+  50% { text-shadow: 0 0 20px #C9A84C88, 0 0 40px #C9A84C44, 0 0 60px #C9A84C22; }
+}
+
+.glow-gold {
+  animation: goldGlow 3s ease-in-out infinite;
+}
+
+/* Particle float */
+@keyframes floatUp {
+  0% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+  100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Door hover effect */
+@keyframes doorPulse {
+  0%, 100% { box-shadow: 0 0 15px #C9A84C22, inset 0 0 15px #C9A84C11; }
+  50% { box-shadow: 0 0 30px #C9A84C44, inset 0 0 30px #C9A84C22; }
+}
+
+.door-pulse {
+  animation: doorPulse 2s ease-in-out infinite;
+}
+
+/* Scroll bar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
   background: #0a0a0a;
-  color: #ffffff;
-  font-family: sans-serif;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* Gold gradient text */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #F0D080 0%, #C9A84C 40%, #8B6914 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(13, 13, 13, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+/* Divider ornament */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Artifact card hover */
+.artifact-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.artifact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(201, 168, 76, 0.3);
+}
+
+/* Button gold */
+.btn-gold {
+  background: linear-gradient(135deg, #C9A84C, #8B6914);
+  color: #000;
+  font-family: var(--font-cinzel);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+}
+.btn-gold:hover {
+  background: linear-gradient(135deg, #F0D080, #C9A84C);
+  box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Progress bar */
+.progress-gold {
+  background: linear-gradient(90deg, #C9A84C, #F0D080);
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+}
+
+/* Locked door overlay */
+.door-locked {
+  filter: grayscale(0.7) brightness(0.6);
+}
+
+.door-unlocked {
+  filter: none;
+}
+
+.door-completed {
+  filter: brightness(1.1);
+}
+.door-completed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(201, 168, 76, 0.1);
+  border: 2px solid var(--gold);
+  border-radius: inherit;
 }
