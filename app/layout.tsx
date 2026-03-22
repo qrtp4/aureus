@@ -16,13 +16,22 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'SOLOMON\'S PALACE — AUREUS GENESIS',
-  description: 'Enter the Palace. Collect 31 Artifacts. Become a Legion.',
+  title: 'AUREUS GENESIS — 888 Warrior NFTs on Polygon',
+  description:
+    '888 genesis warrior NFTs. Mint on Polygon. True ownership. No intermediaries. Be first.',
   openGraph: {
-    title: 'SOLOMON\'S PALACE — AUREUS GENESIS',
-    description: 'A 31-day Web3 quest. Collect artifacts. Reach The Monetary Mint.',
+    title: 'AUREUS GENESIS',
+    description: '888 Warriors. One Chain. Eternal Legacy. Mint now on Polygon.',
     type: 'website',
+    url: 'https://taupe-creponne-de523f.netlify.app',
+    siteName: 'AUREUS GENESIS',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AUREUS GENESIS — 888 NFTs on Polygon',
+    description: '888 Warriors. One Chain. Eternal Legacy.',
+  },
+  themeColor: '#000000',
 };
 
 export default function RootLayout({
@@ -31,10 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${cinzel.variable} ${playfair.variable}`}>
-      <body className="bg-[#050505] text-white antialiased">
-        {children}
-      </body>
+    <html lang="en" className={`${cinzel.variable} ${playfair.variable}`}>
+      <body className="bg-black text-white antialiased">{children}</body>
     </html>
   );
 }
