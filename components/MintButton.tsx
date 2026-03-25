@@ -145,7 +145,7 @@ export default function MintButton() {
         </span>
         {totalSupply !== null && (
           <span className="font-cinzel text-xs text-gold/40 ml-2">
-            {totalSupply} / 888 MINTED
+            {totalSupply} MINTED
           </span>
         )}
       </div>
