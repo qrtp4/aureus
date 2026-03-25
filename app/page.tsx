@@ -5,7 +5,7 @@ const PILLARS = [
   {
     num: '01',
     title: 'GENESIS NFT',
-    desc: '888 warrior tokens minted on Polygon. First come, first sovereign.',
+    desc: '100 Warrior NFTs minted on Polygon. First come, first sovereign.',
     href: '/mint',
     cta: 'Mint Now',
   },
@@ -26,7 +26,7 @@ const PILLARS = [
 ];
 
 const TIMELINE = [
-  { phase: 'PHASE I', title: 'Genesis Mint', desc: '888 NFTs released. Community forms.', active: true },
+  { phase: 'PHASE I', title: 'Genesis Mint', desc: '100 NFTs released. Community forms.', active: true },
   { phase: 'PHASE II', title: 'Treasury Launch', desc: 'On-chain governance activated.', active: false },
   { phase: 'PHASE III', title: 'Expansion', desc: 'Ecosystem grows. New drops. New power.', active: false },
 ];
@@ -85,7 +85,7 @@ export default function Home() {
           </div>
           <div className="mt-12 inline-flex items-center gap-2 border border-gold/20 rounded-full px-5 py-2 bg-black/40">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-xs font-cinzel tracking-widest text-gray-300">MINT IS LIVE — 888 SPOTS AVAILABLE</span>
+            <span className="text-xs font-cinzel tracking-widest text-gray-300">MINT IS LIVE — 100 NFTs MINTED</span>
           </div>
         </div>
 
