@@ -1,5 +1,4 @@
 'use client';
-
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,13 +7,12 @@ import { useEffect, useState } from 'react';
 const MintButton = dynamic(() => import('@/components/MintButton'), { ssr: false });
 
 const CONTRACT_ADDRESS = '0x016024DA4bDC06eC299770e45053AADD1a8b4ab2';
-const TOTAL_SUPPLY = 888;
 
 const FEATURES = [
   {
     icon: '⚔',
     title: 'WARRIOR GENESIS',
-    desc: 'First 888 souls forever immortalized on Polygon blockchain.',
+    desc: 'Legendary warrior souls forever immortalized on Polygon blockchain.',
   },
   {
     icon: '👑',
@@ -36,7 +34,7 @@ const FEATURES = [
 const FAQS = [
   {
     q: 'What is AUREUS GENESIS?',
-    a: 'A collection of 888 unique warrior NFTs minted on Polygon. Genesis holders are the founding council of the AUREUS ecosystem.',
+    a: 'A collection of unique warrior NFTs minted on Polygon. Genesis holders are the founding council of the AUREUS ecosystem.',
   },
   {
     q: 'How many can I mint?',
@@ -59,13 +57,11 @@ const FAQS = [
 export default function MintPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Sticky nav */}
@@ -94,9 +90,8 @@ export default function MintPage() {
         </div>
       </nav>
 
-      {/* Hero mint section with THE MONETARY MINT image */}
+      {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center px-4 pt-20">
-        {/* Background warrior image */}
         <div className="absolute inset-0 overflow-hidden">
           <Image
             src="/ChatGPT Image 10 мар. 2026 г., 22_11_29.png"
@@ -106,39 +101,27 @@ export default function MintPage() {
             className="object-cover"
             style={{ objectPosition: 'center' }}
           />
-          {/* Dark overlay */}
           <div className="absolute inset-0 bg-black/70 backdrop-blur-[1px]" />
-          {/* Gold gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
         </div>
 
         <div className="relative z-10 max-w-2xl mx-auto text-center">
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 border border-gold/30 rounded-full px-4 py-1.5 mb-8 bg-black/40">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             <span className="text-xs font-cinzel tracking-widest text-gold/80">LIVE — MINT NOW</span>
           </div>
 
-          {/* Title */}
           <h1 className="font-cinzel text-5xl md:text-7xl font-bold text-white mb-3 leading-tight drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]">
             AUREUS
           </h1>
-          <h2 className="font-cinzel text-2xl md:text-3xl text-gold tracking-[0.3em] mb-6">
+          <h2 className="font-cinzel text-2xl md:text-3xl text-gold tracking-[0.3em] mb-12">
             GENESIS
           </h2>
-          <p className="font-playfair text-gray-200 text-lg md:text-xl italic mb-3 drop-shadow-lg">
-            888 Warriors. One Chain. No Surrender.
-          </p>
-          <p className="text-gray-400 text-sm font-cinzel tracking-wider mb-12">
-            Polygon Mainnet · ERC-721 · Max Supply: {TOTAL_SUPPLY}
-          </p>
 
-          {/* Mint card */}
           <div className="glass-card rounded-2xl p-8 md:p-10 border border-gold/20 bg-black/40">
             <MintButton />
           </div>
 
-          {/* Contract link */}
           <div className="mt-8">
             <p className="text-xs text-gray-600 font-cinzel tracking-widest mb-2">VERIFIED CONTRACT</p>
             <a
@@ -177,9 +160,8 @@ export default function MintPage() {
 
       {/* Stats bar */}
       <section className="py-16 px-4 border-y border-gold/10">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-8 text-center">
           {[
-            { label: 'TOTAL SUPPLY', value: '888' },
             { label: 'NETWORK', value: 'POLYGON' },
             { label: 'STANDARD', value: 'ERC-721' },
             { label: 'STATUS', value: 'LIVE' },
@@ -233,10 +215,7 @@ export default function MintPage() {
       <section className="py-24 px-4 text-center">
         <div className="max-w-xl mx-auto">
           <div className="w-16 h-px bg-gold/40 mx-auto mb-12" />
-          <h2 className="font-cinzel text-2xl md:text-3xl text-white mb-4">Claim Your Place</h2>
-          <p className="font-playfair italic text-gray-400 mb-10">
-            888 seats at the council table. Every one counts.
-          </p>
+          <h2 className="font-cinzel text-2xl md:text-3xl text-white mb-10">Claim Your Place</h2>
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
@@ -246,7 +225,7 @@ export default function MintPage() {
           </a>
           <div className="mt-16 pt-8 border-t border-gold/10">
             <p className="text-gray-700 text-xs font-cinzel tracking-wider">
-              AUREUS GENESIS &copy; 2025 · Polygon Mainnet
+              AUREUS GENESIS © 2025 · Polygon Mainnet
             </p>
             <a
               href={`https://polygonscan.com/address/${CONTRACT_ADDRESS}`}
