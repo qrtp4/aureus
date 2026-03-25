@@ -34,7 +34,6 @@ const TIMELINE = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white overflow-x-hidden">
-
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-gold/10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -57,7 +56,7 @@ export default function Home() {
         {/* Background image */}
         <div className="absolute inset-0 overflow-hidden">
           <Image
-            src="/ChatGPT Image 14. März 2026, 02_10_00.png"
+            src="/solomon-palace.png"
             alt="Solomon Palace"
             fill
             priority
@@ -81,16 +80,9 @@ export default function Home() {
           <h1 className="font-cinzel font-bold text-6xl md:text-8xl xl:text-9xl text-white leading-none mb-4 drop-shadow-[0_0_40px_rgba(212,175,55,0.3)]">
             AUREUS
           </h1>
-          <div className="font-cinzel text-gold text-xl md:text-2xl tracking-[0.5em] mb-6">
+          <div className="font-cinzel text-gold text-xl md:text-2xl tracking-[0.5em] mb-10">
             GENESIS
           </div>
-
-          <p className="font-playfair italic text-gray-200 text-lg md:text-2xl max-w-xl mx-auto mb-4 drop-shadow-lg">
-            888 Warriors. One Chain. Eternal Legacy.
-          </p>
-          <p className="font-cinzel text-gray-400 text-xs tracking-widest mb-14">
-            POLYGON MAINNET &nbsp;&middot;&nbsp; ERC-721 &nbsp;&middot;&nbsp; 888 MAX SUPPLY
-          </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -110,7 +102,7 @@ export default function Home() {
           {/* Live badge */}
           <div className="mt-12 inline-flex items-center gap-2 border border-gold/20 rounded-full px-5 py-2 bg-black/40">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <span className="text-xs font-cinzel tracking-widest text-gray-300">MINT IS LIVE &mdash; 888 SPOTS AVAILABLE</span>
+            <span className="text-xs font-cinzel tracking-widest text-gray-300">MINT IS LIVE — 888 SPOTS AVAILABLE</span>
           </div>
         </div>
 
@@ -121,7 +113,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── AUREUS LEGION COIN SECTION ── */}
+      {/* ── STATS ── */}
       <section className="py-20 px-4 bg-black relative">
         <div className="absolute inset-0 overflow-hidden opacity-20">
           <Image
@@ -169,7 +161,7 @@ export default function Home() {
                   href={p.href}
                   className="font-cinzel text-gold/50 text-xs tracking-widest hover:text-gold transition-colors inline-flex items-center gap-2"
                 >
-                  {p.cta} <span>&rarr;</span>
+                  {p.cta} <span>→</span>
                 </Link>
               </div>
             ))}
@@ -177,9 +169,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── ROADMAP WITH MARKETPLACE ── */}
+      {/* ── ROADMAP ── */}
       <section id="roadmap" className="py-32 px-4 relative">
-        {/* Background marketplace image */}
         <div className="absolute inset-0 overflow-hidden opacity-10">
           <Image
             src="/ChatGPT Image 22 мар. 2026 г., 18_10_18.png"
@@ -189,7 +180,6 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-black/60" />
         </div>
-
         <div className="max-w-3xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <p className="font-cinzel text-gold text-xs tracking-[0.5em] mb-3">THE PATH</p>
@@ -238,8 +228,8 @@ export default function Home() {
             CLAIM YOUR GENESIS NFT
           </Link>
           <div className="mt-20 pt-10 border-t border-gold/10 flex flex-col md:flex-row items-center justify-center gap-6 text-xs font-cinzel text-gray-700 tracking-wider">
-            <span>AUREUS GENESIS &copy; 2025</span>
-            <span className="hidden md:block">&middot;</span>
+            <span>AUREUS GENESIS © 2025</span>
+            <span className="hidden md:block">·</span>
             <a
               href="https://polygonscan.com/address/0x016024DA4bDC06eC299770e45053AADD1a8b4ab2"
               target="_blank"
