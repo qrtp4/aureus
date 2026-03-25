@@ -95,27 +95,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="py-20 px-4 bg-black relative">
-        <div className="absolute inset-0 overflow-hidden opacity-20">
-          <Image src="/ChatGPT Image 11 мар. 2026 г., 00_23_27.png" alt="AUREUS Legion" fill className="object-cover" />
-          <div className="absolute inset-0 bg-black/80" />
-        </div>
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center relative z-10">
-          {[
-            { v: '888', l: 'GENESIS SUPPLY' },
-            { v: '0', l: 'TEAM RESERVE' },
-            { v: '100%', l: 'ON-CHAIN' },
-            { v: '∞', l: 'LEGACY' },
-          ].map((s) => (
-            <div key={s.l}>
-              <p className="font-cinzel text-3xl md:text-4xl text-gold mb-2">{s.v}</p>
-              <p className="font-cinzel text-xs text-gray-500 tracking-widest">{s.l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* PILLARS */}
       <section id="about" className="py-32 px-4 border-t border-gold/10">
         <div className="max-w-5xl mx-auto">
@@ -175,8 +154,7 @@ export default function Home() {
       <section className="py-32 px-4 border-t border-gold/10">
         <div className="max-w-2xl mx-auto text-center">
           <div className="w-12 h-px bg-gold/40 mx-auto mb-12" />
-          <h2 className="font-cinzel text-4xl md:text-5xl text-white mb-4">Your Seat Awaits</h2>
-          <p className="font-playfair italic text-gray-400 text-lg mb-10">888 warriors. 888 legacies. The council needs you.</p>
+          <h2 className="font-cinzel text-4xl md:text-5xl text-white mb-10">Your Seat Awaits</h2>
           <Link href="/mint" className="inline-block bg-gold text-black font-cinzel font-bold text-sm tracking-widest px-12 py-5 hover:bg-amber-400 transition-all duration-300 shadow-gold">
             CLAIM YOUR GENESIS NFT
           </Link>
