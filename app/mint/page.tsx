@@ -57,11 +57,13 @@ const FAQS = [
 export default function MintPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
   return (
     <main className="min-h-screen bg-black text-white">
       {/* Sticky nav */}
@@ -101,27 +103,23 @@ export default function MintPage() {
             className="object-cover"
             style={{ objectPosition: 'center' }}
           />
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-[1px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black" />
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black" />
         </div>
-
         <div className="relative z-10 max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 border border-gold/30 rounded-full px-4 py-1.5 mb-8 bg-black/40">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             <span className="text-xs font-cinzel tracking-widest text-gold/80">LIVE — MINT NOW</span>
           </div>
-
           <h1 className="font-cinzel text-5xl md:text-7xl font-bold text-white mb-3 leading-tight drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]">
             AUREUS
           </h1>
           <h2 className="font-cinzel text-2xl md:text-3xl text-gold tracking-[0.3em] mb-12">
             GENESIS
           </h2>
-
           <div className="glass-card rounded-2xl p-8 md:p-10 border border-gold/20 bg-black/40">
             <MintButton />
           </div>
-
           <div className="mt-8">
             <p className="text-xs text-gray-600 font-cinzel tracking-widest mb-2">VERIFIED CONTRACT</p>
             <a
